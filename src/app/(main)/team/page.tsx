@@ -8,5 +8,9 @@ export default function Page() {
     setIsClient(true);
   });
   const { token, setToken } = AuthContextGlobal();
-  return <h1>{isClient ? token : ''}</h1>;
+  return (
+    <div className="w-full mt-[72px] ml-52 max-lg:ml-4 mr-4>">
+      {isClient ? token : ''}
+    </div>
+  );
 }
