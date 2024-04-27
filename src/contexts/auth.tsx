@@ -24,7 +24,6 @@ const AuthContext = createContext<ContextProps>({
 });
 
 export const AuthContextProvider = (props: childrenType) => {
-  const y = JSON.stringify(getCookie('token'));
   const [token, setToken] = useState(getCookie('token'));
 
   return (

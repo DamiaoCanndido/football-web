@@ -3,6 +3,7 @@ import { LuLogOut, LuBookMarked } from 'react-icons/lu';
 import Link from 'next/link';
 import { ComponentProps, useEffect, useRef, useState } from 'react';
 import { SideBarContextGlobal } from '@/contexts/sidebar';
+import { deleteCookie } from 'cookies-next';
 
 interface IconButtonProps extends ComponentProps<'aside'> {
   visible?: boolean;
@@ -96,6 +97,7 @@ export const SideBarContent = ({ visible, ...props }: IconButtonProps) => {
             replace
             className="flex cursor-pointer border-b border-grey-200 pr-8 py-2 hover:bg-red-200 items-center text-red-600"
             onClick={() => {
+              deleteCookie('token');
               setSideBarTab('');
             }}
           >
