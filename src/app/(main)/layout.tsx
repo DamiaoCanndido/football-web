@@ -1,4 +1,5 @@
 import { Header } from '@/components/owner/header';
+import { SideBar } from '@/components/owner/sidebar';
 
 export default function DashboardLayout({
   children,
@@ -8,6 +9,7 @@ export default function DashboardLayout({
   return (
     <div className="flex">
       <Header />
+      <SideBar />
       {children}
     </div>
   );
