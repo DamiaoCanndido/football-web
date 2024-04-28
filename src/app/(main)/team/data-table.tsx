@@ -19,7 +19,14 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,6 +35,13 @@ interface DataTableProps<TData, TValue> {
   setP: Dispatch<SetStateAction<number>>;
 }
 
+const teamTypes = [
+  { name: 'all', label: 'Todos' },
+  { name: 'amateur', label: 'Amadores' },
+  { name: 'club', label: 'Clubes' },
+  { name: 'selection', label: 'Seleções' },
+];
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -35,6 +49,7 @@ export function DataTable<TData, TValue>({
   setP,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [typeTitle, setTypeTitle] = useState('Todos');
 
   const table = useReactTable({
     data,
@@ -60,7 +75,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('name')?.setFilterValue(event.target.value)
           }
-          className="max-w-xs ml-4 max-lg:mb-2"
+          className="max-w-xs ml-2 max-lg:mb-2"
         />
         <Input
           placeholder="País..."
@@ -68,8 +83,35 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('country')?.setFilterValue(event.target.value)
           }
-          className="max-w-xs ml-4"
+          className="max-w-xs ml-2"
         />
+        <div className="ml-2 max-lg:mt-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                {typeTitle} <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {teamTypes.map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.label}
+                    className="capitalize"
+                    onCheckedChange={(value) => {
+                      setTypeTitle(column.label);
+                      column.name === 'all'
+                        ? table.getColumn('type')?.setFilterValue('')
+                        : table.getColumn('type')?.setFilterValue(column.name);
+                    }}
+                  >
+                    {column.label}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <Table>
         <TableHeader>

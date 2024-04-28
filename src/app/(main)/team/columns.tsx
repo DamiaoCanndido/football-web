@@ -29,6 +29,10 @@ export const columns: ColumnDef<Team>[] = [
     header: 'Sigla',
   },
   {
+    accessorKey: 'type',
+    header: 'Tipo',
+  },
+  {
     accessorKey: 'country',
     header: 'País',
   },
