@@ -11,6 +11,7 @@ import { deleteCookie } from 'cookies-next';
 export default function Page() {
   const [data, setData] = useState<Team[]>([]);
   const [p, setP] = useState(1);
+  const [name, setName] = useState('');
   const router = useRouter();
 
   const { token } = AuthContextGlobal();
@@ -18,7 +19,7 @@ export default function Page() {
   useEffect(() => {
     async function getData() {
       try {
-        const result = await api.get(`/team?p=${p}`);
+        const result = await api.get(`/team?name=${name}&p=${p}`);
         setData(result.data);
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -28,11 +29,18 @@ export default function Page() {
       }
     }
     getData();
-  }, [p]);
+  }, [p, name]);
 
   return (
     <div className="w-full mt-[72px] ml-52 max-lg:ml-4 mr-4">
-      <DataTable columns={columns} data={data} p={p} setP={setP} />
+      <DataTable
+        columns={columns}
+        data={data}
+        p={p}
+        setP={setP}
+        name={name}
+        setName={setName}
+      />
     </div>
   );
 }

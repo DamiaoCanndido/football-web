@@ -33,6 +33,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   p: number;
   setP: Dispatch<SetStateAction<number>>;
+  name: string;
+  setName: Dispatch<SetStateAction<string>>;
 }
 
 const teamTypes = [
@@ -47,6 +49,8 @@ export function DataTable<TData, TValue>({
   data,
   p,
   setP,
+  name,
+  setName,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [typeTitle, setTypeTitle] = useState('Todos');
@@ -59,7 +63,6 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
-    rowCount: 1,
     pageCount: data.length === 0 ? p : p + 1,
     state: {
       columnFilters,
@@ -71,10 +74,11 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4 max-lg:flex-col mr-4">
         <Input
           placeholder="Nome..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
+          value={name}
+          onChange={(event) => {
+            setName(event.target.value);
+            setP(1);
+          }}
           className="max-w-xs ml-2 max-lg:mb-2"
         />
         <Input
@@ -162,8 +166,9 @@ export function DataTable<TData, TValue>({
           onClick={() => {
             table.previousPage();
             setP(p - 1);
+            setName('');
           }}
-          disabled={!table.getCanPreviousPage()}
+          disabled={p === 1}
         >
           Anterior
         </Button>
@@ -173,8 +178,9 @@ export function DataTable<TData, TValue>({
           onClick={() => {
             table.nextPage();
             setP(p + 1);
+            setName('');
           }}
-          disabled={!table.getCanNextPage()}
+          disabled={data.length < 10}
         >
           Próximo
         </Button>
