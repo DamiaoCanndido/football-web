@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { LuSearch } from 'react-icons/lu';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,6 +36,12 @@ interface DataTableProps<TData, TValue> {
   setP: Dispatch<SetStateAction<number>>;
   name: string;
   setName: Dispatch<SetStateAction<string>>;
+  load: boolean;
+  setLoad: Dispatch<SetStateAction<boolean>>;
+  country: string;
+  setCountry: Dispatch<SetStateAction<string>>;
+  type: string;
+  setType: Dispatch<SetStateAction<'all' | 'amateur' | 'club' | 'selection'>>;
 }
 
 const teamTypes = [
@@ -51,6 +58,12 @@ export function DataTable<TData, TValue>({
   setP,
   name,
   setName,
+  load,
+  setLoad,
+  country,
+  setCountry,
+  type,
+  setType,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [typeTitle, setTypeTitle] = useState('Todos');
@@ -72,23 +85,44 @@ export function DataTable<TData, TValue>({
   return (
     <div className="rounded-md border">
       <div className="flex items-center py-4 max-lg:flex-col mr-4">
-        <Input
-          placeholder="Nome..."
-          value={name}
-          onChange={(event) => {
-            setName(event.target.value);
-            setP(1);
-          }}
-          className="max-w-xs ml-2 max-lg:mb-2"
-        />
-        <Input
-          placeholder="País..."
-          value={(table.getColumn('country')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('country')?.setFilterValue(event.target.value)
-          }
-          className="max-w-xs ml-2"
-        />
+        <div className="relative max-w-xs ml-2 max-lg:mb-2">
+          <Input
+            placeholder="Nome..."
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+            }}
+            className="block"
+          />
+          <button
+            onClick={() => {
+              setLoad(!load);
+              setP(1);
+            }}
+            type="button"
+            className="absolute top-1/2 right-3 -translate-y-1/2"
+          >
+            <LuSearch />
+          </button>
+        </div>
+        <div className="relative max-w-xs ml-2 max-lg:mb-2">
+          <Input
+            placeholder="País..."
+            value={country}
+            onChange={(event) => setCountry(event.target.value)}
+            className="block"
+          />
+          <button
+            onClick={() => {
+              setLoad(!load);
+              setP(1);
+            }}
+            type="button"
+            className="absolute top-1/2 right-3 -translate-y-1/2"
+          >
+            <LuSearch />
+          </button>
+        </div>
         <div className="ml-2 max-lg:mt-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -104,9 +138,11 @@ export function DataTable<TData, TValue>({
                     className="capitalize"
                     onCheckedChange={(value) => {
                       setTypeTitle(column.label);
-                      column.name === 'all'
-                        ? table.getColumn('type')?.setFilterValue('')
-                        : table.getColumn('type')?.setFilterValue(column.name);
+                      setType(
+                        column.name as 'all' | 'amateur' | 'club' | 'selection'
+                      );
+                      setLoad(!load);
+                      setP(1);
                     }}
                   >
                     {column.label}
