@@ -71,8 +71,9 @@ export const CreateDialog = (props: HTMLProps) => {
     code,
     type,
     logo,
+    country,
   }: z.infer<typeof formSchema>) {
-    props.func({ name, code, type, logo });
+    props.func({ name, code, type, logo, country });
   }
 
   return (

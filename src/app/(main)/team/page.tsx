@@ -46,11 +46,11 @@ export default function Page() {
 
   const create = async ({ name, code, logo, type, country }: CreateTeam) => {
     try {
-      const a = await api.post(
+      await api.post(
         '/team',
         {
           name,
-          code,
+          code: code.toUpperCase(),
           logo,
           type,
           country,
