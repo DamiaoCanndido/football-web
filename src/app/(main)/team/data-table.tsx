@@ -27,7 +27,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
-import { LuSearch } from 'react-icons/lu';
+import { LuPlus, LuSearch } from 'react-icons/lu';
+import { CreateTeam } from '@/entities/team';
+import { CreateDialog } from '@/components/owner/create-dialog';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,6 +44,7 @@ interface DataTableProps<TData, TValue> {
   setCountry: Dispatch<SetStateAction<string>>;
   type: string;
   setType: Dispatch<SetStateAction<'all' | 'amateur' | 'club' | 'selection'>>;
+  create: (create: CreateTeam) => void;
 }
 
 const teamTypes = [
@@ -64,6 +67,7 @@ export function DataTable<TData, TValue>({
   setCountry,
   type,
   setType,
+  create,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [typeTitle, setTypeTitle] = useState('Todos');
@@ -152,6 +156,19 @@ export function DataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <CreateDialog
+          func={create}
+          action="Criar"
+          description="Crie um time"
+          slug="team"
+          title="Time"
+          myDiv={
+            <div className="flex max-lg:hidden items-center justify-center w-20 h-9 bg-violet-950 hover:bg-violet-300 rounded-md cursor-pointer ml-2 mr-2">
+              <LuPlus color="white" size={20} />
+              <span className="text-white">Add</span>
+            </div>
+          }
+        />
       </div>
       <Table>
         <TableHeader>

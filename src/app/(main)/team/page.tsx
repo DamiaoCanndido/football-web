@@ -3,10 +3,13 @@ import { api } from '@/lib/axios';
 import { Team, columns } from './columns';
 import { DataTable } from './data-table';
 import { AuthContextGlobal } from '@/contexts/auth';
+import { useToast } from '@/components/ui/use-toast';
 import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { deleteCookie } from 'cookies-next';
+import { CreateTeam } from '@/entities/team';
+import { ToastAction } from '@/components/ui/toast';
 
 export default function Page() {
   const [data, setData] = useState<Team[]>([]);
@@ -18,6 +21,7 @@ export default function Page() {
     'all'
   );
   const router = useRouter();
+  const { toast } = useToast();
 
   const { token } = AuthContextGlobal();
 
@@ -40,6 +44,31 @@ export default function Page() {
     getData();
   }, [p, load]);
 
+  const create = async ({ name, code, logo, type, country }: CreateTeam) => {
+    try {
+      const a = await api.post(
+        '/team',
+        {
+          name,
+          code,
+          logo,
+          type,
+          country,
+        },
+        { headers: { founder: token } }
+      );
+      setLoad(!load);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast({
+          title: error.response?.data.message,
+          variant: 'destructive',
+          action: <ToastAction altText="fechar">fechar</ToastAction>,
+        });
+      }
+    }
+  };
+
   return (
     <div className="w-full mt-[72px] ml-52 max-lg:ml-4 mr-4">
       <DataTable
@@ -55,6 +84,7 @@ export default function Page() {
         setCountry={setCountry}
         type={type}
         setType={setType}
+        create={create}
       />
     </div>
   );
